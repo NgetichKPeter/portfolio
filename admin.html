@@ -1,1 +1,105 @@
-o
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration Panel | Ngetich K. Peter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen p-4 sm:p-8 font-sans max-w-2xl mx-auto space-y-6">
+
+  <header class="flex justify-between items-center border-b border-gray-800 pb-4">
+    <div class="flex items-center space-x-2">
+      <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+      </svg>
+      <h1 class="text-lg font-bold text-white">System Administration</h1>
+    </div>
+    <a href="./index.html" class="text-xs text-blue-400 hover:underline">Return to Portfolio</a>
+  </header>
+
+  <!-- Authentication -->
+  <section id="auth-section" class="bg-gray-900 border border-gray-800 p-5 rounded-lg space-y-3">
+    <label class="block text-xs font-medium text-gray-300 uppercase tracking-wider">GitHub Personal Access Token</label>
+    <div class="flex gap-2">
+      <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx" class="flex-1 bg-gray-950 border border-gray-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 font-mono">
+      <button onclick="saveToken()" class="bg-gray-800 hover:bg-gray-700 text-white border border-gray-700 px-4 py-2 text-sm font-medium rounded">Save Token</button>
+    </div>
+    <span id="auth-status" class="text-xs font-mono block mt-1 text-gray-400">Token status: Not stored</span>
+  </section>
+
+  <!-- Navigation Tabs -->
+  <div class="flex border-b border-gray-800 text-sm">
+    <button onclick="switchTab('updates')" id="tab-updates" class="px-4 py-2 border-b-2 border-blue-500 text-blue-400 font-medium">Manage Updates</button>
+    <button onclick="switchTab('projects')" id="tab-projects" class="px-4 py-2 text-gray-400 font-medium">Manage Projects</button>
+  </div>
+
+  <!-- Updates Form -->
+  <section id="updates-section" class="space-y-6">
+    <form id="update-form" onsubmit="handleUpdateSubmit(event)" class="bg-gray-900 border border-gray-800 p-5 rounded-lg space-y-4">
+      <h3 id="update-form-title" class="font-bold text-gray-200 text-sm border-b border-gray-800 pb-2">Publish Log Entry</h3>
+      <input type="hidden" id="update-id">
+      
+      <div>
+        <label class="block text-xs text-gray-400 mb-1">Title</label>
+        <input type="text" id="update-title" required class="w-full bg-gray-950 border border-gray-800 rounded p-2 text-sm text-white focus:border-blue-500">
+      </div>
+
+      <div>
+        <label class="block text-xs text-gray-400 mb-1">Content</label>
+        <textarea id="update-content" rows="3" required class="w-full bg-gray-950 border border-gray-800 rounded p-2 text-sm text-white focus:border-blue-500"></textarea>
+      </div>
+
+      <div class="flex gap-2">
+        <button type="submit" id="update-submit-btn" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 text-sm font-medium rounded">Commit Log Entry</button>
+        <button type="button" onclick="resetUpdateForm()" class="bg-gray-800 text-gray-400 px-3 py-2 text-sm rounded">Reset</button>
+      </div>
+    </form>
+
+    <div class="space-y-2">
+      <h3 class="text-xs font-mono text-gray-400 uppercase">Existing Log Entries</h3>
+      <div id="admin-updates-list" class="space-y-2"></div>
+    </div>
+  </section>
+
+  <!-- Projects Form -->
+  <section id="projects-section" class="space-y-6 hidden">
+    <form id="project-form" onsubmit="handleProjectSubmit(event)" class="bg-gray-900 border border-gray-800 p-5 rounded-lg space-y-4">
+      <h3 id="project-form-title" class="font-bold text-gray-200 text-sm border-b border-gray-800 pb-2">Add Project Specification</h3>
+      <input type="hidden" id="project-id">
+
+      <div>
+        <label class="block text-xs text-gray-400 mb-1">Project Name</label>
+        <input type="text" id="project-title" required class="w-full bg-gray-950 border border-gray-800 rounded p-2 text-sm text-white">
+      </div>
+
+      <div>
+        <label class="block text-xs text-gray-400 mb-1">Description</label>
+        <textarea id="project-desc" rows="2" required class="w-full bg-gray-950 border border-gray-800 rounded p-2 text-sm text-white"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-xs text-gray-400 mb-1">Technologies (Comma delimited)</label>
+        <input type="text" id="project-tech" placeholder="Next.js, Tailwind CSS, PostgreSQL" required class="w-full bg-gray-950 border border-gray-800 rounded p-2 text-sm text-white font-mono">
+      </div>
+
+      <div>
+        <label class="block text-xs text-gray-400 mb-1">Status Identifier</label>
+        <input type="text" id="project-status" placeholder="Production / In Development" required class="w-full bg-gray-950 border border-gray-800 rounded p-2 text-sm text-white">
+      </div>
+
+      <div class="flex gap-2">
+        <button type="submit" id="project-submit-btn" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 text-sm font-medium rounded">Commit Project Entry</button>
+        <button type="button" onclick="resetProjectForm()" class="bg-gray-800 text-gray-400 px-3 py-2 text-sm rounded">Reset</button>
+      </div>
+    </form>
+
+    <div class="space-y-2">
+      <h3 class="text-xs font-mono text-gray-400 uppercase">Existing Projects</h3>
+      <div id="admin-projects-list" class="space-y-2"></div>
+    </div>
+  </section>
+
+  <script src="./js/admin.js"></script>
+</body>
+</html>
