@@ -3,5 +3,7 @@
   "handle": "@ngetichkpeter",
   "title": "Full-Stack Software Developer",
   "bio": "Specializing in full-stack architecture, backend integrations, and platform engineering.",
-  "location": "Kenya"
+  "location": "Kenya",
+  "avatarUrl": "https://github.com/ngetichkpeter.png",
+  "coverUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80"
 }
