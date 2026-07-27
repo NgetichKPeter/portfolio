@@ -1,8 +1,7 @@
-// Relative fetching avoids raw.githubusercontent CORS & caching delays
 async function fetchData(endpoint) {
   try {
     const res = await fetch(`./data/${endpoint}?cacheBust=${Date.now()}`);
-    if (!res.ok) throw new Error(`HTTP error. Status: ${res.status}`);
+    if (!res.ok) throw new Error(`HTTP status: ${res.status}`);
     return await res.json();
   } catch (err) {
     console.error(`Error loading ${endpoint}:`, err);
@@ -25,6 +24,13 @@ async function loadProfile() {
   document.getElementById('user-handle').textContent = data.handle;
   document.getElementById('user-title').textContent = data.title;
   document.getElementById('user-bio').textContent = data.bio;
+
+  if (data.avatarUrl) {
+    document.getElementById('user-avatar').src = data.avatarUrl;
+  }
+  if (data.coverUrl) {
+    document.getElementById('cover-container').style.backgroundImage = `url('${data.coverUrl}')`;
+  }
 }
 
 async function loadUpdates() {
@@ -39,24 +45,21 @@ async function loadUpdates() {
       </div>
       <h3 class="font-bold text-gray-200 text-base">${u.title}</h3>
       <p class="text-sm text-gray-400 leading-relaxed">${u.content}</p>
-      
-      <!-- Interactive Visitor Comments Section -->
-      <details class="pt-2 border-t border-gray-800/60 group">
+
+      <!-- Visitor Comment Thread -->
+      <details class="pt-3 border-t border-gray-800/80 group">
         <summary class="text-xs font-mono text-blue-400 hover:text-blue-300 cursor-pointer flex items-center space-x-1 select-none py-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
           </svg>
           <span>View / Write Comments</span>
         </summary>
-        <div class="mt-3 bg-gray-950 p-3 rounded border border-gray-800/80 utterances-wrapper">
-          <script src="https://utteranc.es/client.js"
-                  repo="ngetichkpeter/portfolio"
-                  issue-term="title"
-                  label="visitor-comment"
-                  theme="github-dark"
-                  crossorigin="anonymous"
-                  async>
-          </script>
+        <div class="mt-3 bg-gray-950 p-3 rounded border border-gray-800/80">
+          <iframe 
+            src="https://utteranc.es/frame.html?repo=ngetichkpeter/portfolio&issue-term=${encodeURIComponent(u.title)}&label=visitor-comment&theme=github-dark" 
+            class="w-full border-0 min-h-[220px]"
+            loading="lazy">
+          </iframe>
         </div>
       </details>
     </article>
