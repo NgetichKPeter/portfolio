@@ -1,1 +1,10 @@
-o
+[
+  {
+    "id": "1",
+    "title": "The New Updates",
+    "description": "Full-stack news publishing platform featuring server-side rendering, continuous integration pipelines, and database optimization.",
+    "techStack": ["Next.js", "Tailwind CSS", "PostgreSQL", "Prisma"],
+    "repoUrl": "https://github.com/ngetichkpeter/the-new-updates",
+    "status": "In Development"
+  }
+]
