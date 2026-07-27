@@ -2,8 +2,10 @@
   "name": "Ngetich K. Peter",
   "handle": "@ngetichkpeter",
   "title": "Full-Stack Software Developer",
-  "bio": "Specializing in full-stack architecture, backend integrations, and platform engineering.",
-  "location": "Kenya",
+  "bio": "Full-Stack Engineer based in Nairobi (orig. Bomet County) with 10 years of coding experience (since 2016). Specialized in Next.js, Tailwind CSS, PostgreSQL, and Prisma ORM.",
+  "location": "Nairobi, Kenya",
+  "email": "ngetichpeter97@gmail.com",
+  "phone": "+254748263456",
   "avatarUrl": "https://github.com/ngetichkpeter.png",
   "coverUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80"
 }
