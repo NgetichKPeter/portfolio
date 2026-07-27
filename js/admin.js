@@ -6,6 +6,7 @@ const CONFIG = {
 
 let rawUpdates = [];
 let rawProjects = [];
+let rawProfile = {};
 
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('gh_pat');
@@ -29,21 +30,31 @@ function saveToken() {
 }
 
 function switchTab(tab) {
+  const profileSec = document.getElementById('profile-section');
   const updatesSec = document.getElementById('updates-section');
   const projectsSec = document.getElementById('projects-section');
+  
+  const tabProfile = document.getElementById('tab-profile');
   const tabUpdates = document.getElementById('tab-updates');
   const tabProjects = document.getElementById('tab-projects');
 
-  if (tab === 'updates') {
+  profileSec.classList.add('hidden');
+  updatesSec.classList.add('hidden');
+  projectsSec.classList.add('hidden');
+
+  tabProfile.className = 'px-4 py-2 text-gray-400 font-medium';
+  tabUpdates.className = 'px-4 py-2 text-gray-400 font-medium';
+  tabProjects.className = 'px-4 py-2 text-gray-400 font-medium';
+
+  if (tab === 'profile') {
+    profileSec.classList.remove('hidden');
+    tabProfile.className = 'px-4 py-2 border-b-2 border-blue-500 text-blue-400 font-medium';
+  } else if (tab === 'updates') {
     updatesSec.classList.remove('hidden');
-    projectsSec.classList.add('hidden');
     tabUpdates.className = 'px-4 py-2 border-b-2 border-blue-500 text-blue-400 font-medium';
-    tabProjects.className = 'px-4 py-2 text-gray-400 font-medium';
-  } else {
-    updatesSec.classList.add('hidden');
+  } else if (tab === 'projects') {
     projectsSec.classList.remove('hidden');
     tabProjects.className = 'px-4 py-2 border-b-2 border-blue-500 text-blue-400 font-medium';
-    tabUpdates.className = 'px-4 py-2 text-gray-400 font-medium';
   }
 }
 
@@ -111,6 +122,10 @@ async function commitFileToGitHub(filePath, updatedData, commitMessage) {
 
 async function loadAdminData() {
   try {
+    const profFile = await getFileFromGitHub('data/profile.json');
+    rawProfile = JSON.parse(base64ToUtf8(profFile.content));
+    populateProfileForm();
+
     const updateFile = await getFileFromGitHub('data/updates.json');
     rawUpdates = JSON.parse(base64ToUtf8(updateFile.content));
     renderAdminUpdates();
@@ -120,6 +135,34 @@ async function loadAdminData() {
     renderAdminProjects();
   } catch (err) {
     console.error('Data retrieval failed:', err);
+  }
+}
+
+function populateProfileForm() {
+  document.getElementById('prof-name').value = rawProfile.name || '';
+  document.getElementById('prof-handle').value = rawProfile.handle || '';
+  document.getElementById('prof-title').value = rawProfile.title || '';
+  document.getElementById('prof-bio').value = rawProfile.bio || '';
+  document.getElementById('prof-avatar').value = rawProfile.avatarUrl || '';
+  document.getElementById('prof-cover').value = rawProfile.coverUrl || '';
+}
+
+async function handleProfileSubmit(e) {
+  e.preventDefault();
+  const updatedProfile = {
+    name: document.getElementById('prof-name').value,
+    handle: document.getElementById('prof-handle').value,
+    title: document.getElementById('prof-title').value,
+    bio: document.getElementById('prof-bio').value,
+    location: rawProfile.location || 'Kenya',
+    avatarUrl: document.getElementById('prof-avatar').value,
+    coverUrl: document.getElementById('prof-cover').value
+  };
+
+  const success = await commitFileToGitHub('data/profile.json', updatedProfile, 'Update profile info and images');
+  if (success) {
+    alert('Profile updated successfully.');
+    loadAdminData();
   }
 }
 
