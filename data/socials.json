@@ -1,1 +1,7 @@
-o
+[
+  { "name": "X (Twitter)", "handle": "@ngetichkpeter", "url": "https://x.com/ngetichkpeter" },
+  { "name": "YouTube", "handle": "@ngetichkpeter", "url": "https://youtube.com/@ngetichkpeter" },
+  { "name": "Reddit", "handle": "u/ngetichkpeter", "url": "https://reddit.com/user/ngetichkpeter" },
+  { "name": "Tumblr", "handle": "@ngetichkpeter", "url": "https://ngetichkpeter.tumblr.com" },
+  { "name": "Facebook", "handle": "@ngetichkpeter001", "url": "https://facebook.com/ngetichkpeter001" }
+]
