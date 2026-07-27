@@ -1,19 +1,7 @@
-const GITHUB_USERNAME = 'ngetichkpeter';
-const REPO_NAME = 'portfolio';
-const BRANCH = 'main';
-
-const BASE_URL = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/${BRANCH}/data`;
-
-document.addEventListener('DOMContentLoaded', () => {
-  loadProfile();
-  loadUpdates();
-  loadProjects();
-  loadSocials();
-});
-
+// Relative fetching avoids raw.githubusercontent CORS & caching delays
 async function fetchData(endpoint) {
   try {
-    const res = await fetch(`${BASE_URL}/${endpoint}?cacheBust=${Date.now()}`);
+    const res = await fetch(`./data/${endpoint}?cacheBust=${Date.now()}`);
     if (!res.ok) throw new Error(`HTTP error. Status: ${res.status}`);
     return await res.json();
   } catch (err) {
@@ -21,6 +9,13 @@ async function fetchData(endpoint) {
     return null;
   }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadProfile();
+  loadUpdates();
+  loadProjects();
+  loadSocials();
+});
 
 async function loadProfile() {
   const data = await fetchData('profile.json');
@@ -38,12 +33,32 @@ async function loadUpdates() {
   if (!updates) return;
 
   container.innerHTML = updates.map(u => `
-    <article class="bg-gray-900 border border-gray-800 p-4 rounded-lg space-y-1">
+    <article class="bg-gray-900 border border-gray-800 p-5 rounded-lg space-y-3">
       <div class="flex justify-between items-center text-xs text-gray-500 font-mono">
         <span>${u.date}</span>
       </div>
       <h3 class="font-bold text-gray-200 text-base">${u.title}</h3>
       <p class="text-sm text-gray-400 leading-relaxed">${u.content}</p>
+      
+      <!-- Interactive Visitor Comments Section -->
+      <details class="pt-2 border-t border-gray-800/60 group">
+        <summary class="text-xs font-mono text-blue-400 hover:text-blue-300 cursor-pointer flex items-center space-x-1 select-none py-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+          </svg>
+          <span>View / Write Comments</span>
+        </summary>
+        <div class="mt-3 bg-gray-950 p-3 rounded border border-gray-800/80 utterances-wrapper">
+          <script src="https://utteranc.es/client.js"
+                  repo="ngetichkpeter/portfolio"
+                  issue-term="title"
+                  label="visitor-comment"
+                  theme="github-dark"
+                  crossorigin="anonymous"
+                  async>
+          </script>
+        </div>
+      </details>
     </article>
   `).join('');
 }
